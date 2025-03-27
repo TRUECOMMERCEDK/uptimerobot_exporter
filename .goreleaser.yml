@@ -11,4 +11,4 @@ builds:
     id: "uptimerobot_exporter"
     dir: .
     main: ./
-    binary: uptimeexporterserver
+    binary: server

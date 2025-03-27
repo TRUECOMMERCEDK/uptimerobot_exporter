@@ -1,39 +1,33 @@
 package main
 
 import (
+	"flag"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"log"
 	"log/slog"
 	"maragu.dev/env"
-	"net"
 	"net/http"
 	"os"
-	"strconv"
-	"uptimerobot_exporter/config"
-	"uptimerobot_exporter/prober"
+)
+
+var (
+	addr = flag.String("web.listen-address", ":9147", "Address on which to expose metrics and web interface.")
 )
 
 func main() {
-
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	_ = env.Load()
 
-	host := env.GetStringOrDefault("HOST", "0.0.0.0")
-	port := env.GetIntOrDefault("PORT", 9147)
+	apiKey := env.GetStringOrDefault("UPTIMEROBOT_API_KEY", "")
 
-	address := net.JoinHostPort(host, strconv.Itoa(port))
-
-	envConfig := config.Config{
-		UptimeKey:  env.GetStringOrDefault("API_KEY", ""),
-		UptimeHost: env.GetStringOrDefault("API_HOST", "api.uptimerobot.com"),
+	if apiKey == "" {
+		logger.Error("UPTIMEROBOT_API_KEY is not set")
 	}
 
-	http.HandleFunc("/metrics", func(w http.ResponseWriter, r *http.Request) {
-		prober.Handler(w, r, envConfig, logger)
-	})
+	logger.Info("Uptimerobot exporter Starting", "binding_address", addr)
 
-	logger.Info("UptimeRobot Exporter Starting", "binding_address", address)
-
-	if err := http.ListenAndServe(address, nil); err != nil {
-		logger.Error("UptimeRobot Exporter Start failed", "binding_address", address)
-	}
-
+	prometheus.MustRegister(NewCollector(apiKey))
+	http.Handle("/metrics", promhttp.Handler())
+	log.Fatal(http.ListenAndServe(*addr, nil))
 }
