@@ -1,5 +1,12 @@
 # uptimerobot_exporter
 
+```console
+0 - paused
+1 - not checked yet
+2 - up
+8 - seems down
+9 - down
+```
 
 ## Installation
 ```console
