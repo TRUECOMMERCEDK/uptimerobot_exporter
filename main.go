@@ -2,17 +2,18 @@ package main
 
 import (
 	"flag"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"log/slog"
-	"maragu.dev/env"
 	"net/http"
 	"os"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"maragu.dev/env"
 )
 
 var (
-	addr = flag.String("web.listen-address", ":9147", "Address on which to expose metrics and web interface.")
+	addr = flag.String("web.listen-address", ":9149", "Address on which to expose metrics and web interface.")
 )
 
 func main() {
