@@ -3,9 +3,12 @@ project_name: uptimerobot_exporter
 version: 2
 builds:
   - id: "uptimerobot_exporter"
+    ldflags:
+      - -s -w
+      - -X main.release={{.ShortCommit}}
     goos:
       - linux
     goarch:
       - amd64
-    main: ./
+    main: ./cmd/uptimerobot_exporter/
     binary: server
