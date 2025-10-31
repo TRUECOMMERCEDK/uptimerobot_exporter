@@ -2,13 +2,10 @@
 project_name: uptimerobot_exporter
 version: 2
 builds:
-  - env: [CGO_ENABLED=0]
+  - id: "uptimerobot_exporter"
     goos:
       - linux
-      - windows
     goarch:
       - amd64
-    id: "uptimerobot_exporter"
-    dir: .
     main: ./
     binary: server
